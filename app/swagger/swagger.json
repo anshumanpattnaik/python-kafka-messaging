@@ -1,0 +1,143 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "0.0.1",
+        "title": "Python Kafka Messaging",
+        "description": "",
+        "contact": {
+            "name": "Anshuman Pattnaik",
+            "url": "https://hackbotone.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:5000/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "User",
+            "description": "Create your profile"
+        }
+    ],
+    "paths": {
+        "/sign_up": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign up and connect with millions of friends over whatsapp",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User Created Successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/sign_in": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Authenticate yourself by using your phone number",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "items": {
+                                "$ref": "#/definitions/UserLoggedIn"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Incorrect Username or Password"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserLogin": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserLoggedIn": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
