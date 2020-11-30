@@ -12,7 +12,6 @@ users_bp = Blueprint('users', __name__)
 
 
 def twilio_msg_verify(phone_no):
-
     client = Client(Config.ACCOUNT_SID, Config.AUTH_TOKEN)
 
     random_no = randint(100000, 999999)
@@ -24,6 +23,38 @@ def twilio_msg_verify(phone_no):
     otp.save()
 
     return response
+
+
+@users_bp.route(Config.USER_PROFILE, methods=['GET'])
+@jwt_required
+def user_profile(phone_no):
+    if get_jwt_identity() == phone_no:
+        user = Users.objects.get(phone_no=phone_no)
+        return make_response(jsonify({
+            'full_name': user.full_name,
+            'photo_url': user.photo_url
+        }), 200)
+    else:
+        abort(401)
+
+
+# User can update their user profile based on their phone_no
+@users_bp.route(Config.UPDATE_PROFILE, methods=['PUT'])
+@jwt_required
+def update_profile(phone_no):
+    if get_jwt_identity() == phone_no:
+        user = Users.objects(phone_no=phone_no).first()
+        if 'full_name' in request.json:
+            user.update(full_name=request.json['full_name'])
+
+        if 'photo_url' in request.json:
+            user.update(photo_url=request.json['photo_url'])
+
+        return make_response(jsonify({
+            'success': 'User profile updated successfully'
+        }), 200)
+    else:
+        abort(401)
 
 
 @users_bp.route(Config.SIGN_IN, methods=['POST'])
@@ -91,7 +122,8 @@ def account_verify():
 
                 return make_response(jsonify({
                     'access_token': access_token,
-                    'full_name': user.full_name
+                    'full_name': user.full_name,
+                    'photo_url': user.photo_url
                 }), 200)
             else:
                 user.update(is_verify=True)

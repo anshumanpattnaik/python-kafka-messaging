@@ -19,8 +19,6 @@ def redirect_to_docs():
     return redirect("http://127.0.0.1:5000/api/docs")
 
 # Swagger api docs route
-
-
 @app.route('/swagger/<path:path>')
 def send_static(path):
     return send_from_directory('swagger', path)
@@ -45,5 +43,8 @@ def initialize_app():
 
     from app.api.users_api import users_bp
     app.register_blueprint(users_bp)
+
+    from app.api.kafka_message_api import messages_bp
+    app.register_blueprint(messages_bp)
 
     return app
