@@ -62,10 +62,10 @@ Open http://127.0.0.1:5000 to view in the browser.
 Once your Kafka server up and running then go inside the project and start the [kafka-consumer.py](https://github.com/anshumanpattnaik/python-kafka-messaging/blob/main/kafka_consumer.py) script to receive an incoming message from the producer.
 
 #### Important
-In case of one to one messaging you can comment out `subscribe` code at line no 21 because it's only required in a group conversation.
+In case of one to one messaging you can comment out `subscribe` code at line no [21](https://github.com/anshumanpattnaik/python-kafka-messaging/blob/b651fbbdd34650408a6ae639b7ce1a536e0d121e/kafka_consumer.py#L21) because it's only required in a group conversation.
 
 ````````````````````````````````````````
-# consumer.subscribe(group_topic) // one to one conversation
+# consumer.subscribe(group_topic) // in case of one to one conversation
 ````````````````````````````````````````
 
 `````````````````````````````````````````````````````````````````
