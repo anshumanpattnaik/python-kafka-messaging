@@ -1,5 +1,5 @@
 ## Python Kafka Messaging
-The idea behind this project is to demonstrate the chat messaging service using [Apache Kafka](https://kafka.apache.org/) and this proof of concept follows the architecture of WhatsApp messaging for example individual messaging and group messaging. Apache Kafka messaging framework works based on producer and consumer architecture and to implement these core concepts it provides us to create Kafka topics, send messages using KafkaProducer and receive messages using KafkaConsumer based on the subscribed topics, so the Kafka framework is quite helpful while building distributed streaming-based system.
+The idea behind this project is to demonstrate the chat messaging service using [Apache Kafka](https://kafka.apache.org/) and this proof of concept follows the architecture of WhatsApp messaging, (i.e. one to one messaging and group messaging). Apache Kafka messaging framework works based on producer and consumer architecture and to implement these core concepts it provides us to create Kafka topics, send messages using KafkaProducer and receive messages using KafkaConsumer based on the subscribed topics, so the Kafka framework is quite helpful while building distributed streaming-based system.
 
 <img src="screenshots/WhatsApp_Kafka_Python.png"/>
 
