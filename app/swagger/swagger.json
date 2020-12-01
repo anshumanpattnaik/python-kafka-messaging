@@ -3,7 +3,7 @@
     "info": {
         "version": "0.0.1",
         "title": "Python Kafka Messaging",
-        "description": "",
+        "description": "The idea behind this project is to demostrate the chat messaging service using Apache Kafka and the proof of concept follows the architecture of whatsapp",
         "contact": {
             "name": "Anshuman Pattnaik",
             "url": "https://hackbotone.com"
@@ -18,6 +18,14 @@
         {
             "name": "User",
             "description": "Create your profile"
+        },
+        {
+            "name": "Kafka Messaging",
+            "description": "Create topics and produce message to the consumers"
+        },
+        {
+            "name": "Kafka Group Messaging",
+            "description": "Create topics and produce message to the subscribed consumers"
         }
     ],
     "paths": {
@@ -26,7 +34,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Sign up and connect with millions of friends over whatsapp",
+                "summary": "Sign up and connect with millions of friends over messaging",
                 "requestBody": {
                     "description": "",
                     "required": true,
@@ -40,7 +48,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "User Created Successfully"
+                        "description": "OTP is sent to your registered phone number"
                     },
                     "400": {
                         "description": "Invalid Request"
@@ -66,16 +74,295 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "schema": {
-                            "type": "object",
-                            "items": {
-                                "$ref": "#/definitions/UserLoggedIn"
-                            }
-                        }
+                    "200": {
+                        "description": "OTP is sent to your registered phone number"
                     },
                     "401": {
-                        "description": "Incorrect Username or Password"
+                        "description": "Phone number you've entered is not registered"
+                    }
+                }
+            }
+        },
+        "/otp_verify": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User verfication using twilio otp",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/OTP"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User verification successful"
+                    },
+                    "401": {
+                        "description": "Phone number you've entered is not registered"
+                    }
+                }
+            }
+        },
+        "/update_profile/{phone_no}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update your profile",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Profile"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/profile/{phone_no}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Find your profile",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Profile"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Profile"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/send_message/{phone_no}": {
+            "post": {
+                "tags": [
+                    "Kafka Messaging"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Send Message to the consumers",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Message"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/receive_message/{phone_no}/{receiver}": {
+            "get": {
+                "tags": [
+                    "Kafka Messaging"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Receive Message from the consumers",
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "receiver",
+                        "in": "path",
+                        "description": "Receiver topic name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ReceiverMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/create_group/{phone_no}": {
+            "post": {
+                "tags": [
+                    "Kafka Group Messaging"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Create a group to start producing message to subscribed consumers",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Group"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/group_messages/{phone_no}/{group_id}": {
+            "get": {
+                "tags": [
+                    "Kafka Group Messaging"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Fetch the messages from group",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Group"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "phone_no",
+                        "in": "path",
+                        "description": "Your registered phone no",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Unique group id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request"
                     }
                 }
             }
@@ -94,30 +381,35 @@
         "User": {
             "type": "object",
             "properties": {
-                "username": {
+                "full_name": {
                     "type": "string"
                 },
-                "password": {
+                "phone_no": {
                     "type": "string"
                 },
-                "name": {
+                "photo_url": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
-                "dob": {
-                    "type": "string"
+                "is_verify": {
+                    "type": "boolean"
                 }
             }
         },
         "UserLogin": {
             "type": "object",
             "properties": {
-                "username": {
+                "phone_no": {
+                    "type": "string"
+                }
+            }
+        },
+        "OTP": {
+            "type": "object",
+            "properites": {
+                "phone_no": {
                     "type": "string"
                 },
-                "password": {
+                "otp": {
                     "type": "string"
                 }
             }
@@ -135,6 +427,88 @@
                     "type": "string"
                 },
                 "dob": {
+                    "type": "string"
+                }
+            }
+        },
+        "Profile": {
+            "type": "object",
+            "properties": {
+                "full_name": {
+                    "type": "string"
+                },
+                "phone_no": {
+                    "type": "string"
+                }
+            }
+        },
+        "Message": {
+            "type": "object",
+            "properties": {
+                "sender": {
+                    "type": "string"
+                },
+                "receiver": {
+                    "type": "string"
+                },
+                "phone_no": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "MessageResponse": {
+            "type": "object",
+            "properties": {
+                "sender": {
+                    "type": "string"
+                },
+                "receiver": {
+                    "type": "string"
+                },
+                "phone_no": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "participants": {
+                    "type": "string"
+                }
+            }
+        },
+        "ReceiverMessage": {
+            "type": "object",
+            "properties": {
+                "sender_message": {
+                    "type": "string"
+                },
+                "receiver_message": {
+                    "type": "string"
+                }
+            }
+        },
+        "Group": {
+            "type": "object",
+            "properties": {
+                "group_id": {
+                    "type": "string"
+                },
+                "group_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "participants": {
                     "type": "string"
                 }
             }

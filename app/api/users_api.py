@@ -1,4 +1,5 @@
 from flask import Blueprint, make_response, jsonify, request
+from kafka.admin import KafkaAdminClient, NewTopic
 from flask_jwt_extended import (
     jwt_required, create_access_token, get_jwt_identity)
 from werkzeug.exceptions import abort
@@ -10,7 +11,7 @@ from ..config import Config
 
 users_bp = Blueprint('users', __name__)
 
-
+# user verification using twilio message
 def twilio_msg_verify(phone_no):
     client = Client(Config.ACCOUNT_SID, Config.AUTH_TOKEN)
 
@@ -38,7 +39,6 @@ def user_profile(phone_no):
         abort(401)
 
 
-# User can update their user profile based on their phone_no
 @users_bp.route(Config.UPDATE_PROFILE, methods=['PUT'])
 @jwt_required
 def update_profile(phone_no):
@@ -87,10 +87,19 @@ def sign_up():
         full_name = request.json['full_name']
         photo_url = request.json['photo_url']
 
+        kafka_topic_name = phone_no.replace("+", "")
+
+        client = KafkaAdminClient(bootstrap_servers="localhost:9092", client_id=phone_no)
+
+        topics = []
+        topics.append(
+            NewTopic(name=kafka_topic_name, num_partitions=1, replication_factor=1))
+        client.create_topics(new_topics=topics, validate_only=False)
+
         users = Users(full_name=full_name,
                       phone_no=phone_no,
                       photo_url=photo_url,
-                      is_verify=False)
+                      is_verify=True)
         users.save()
 
         response = twilio_msg_verify(phone_no)

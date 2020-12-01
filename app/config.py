@@ -1,6 +1,5 @@
 import os
 
-
 class Config:
     # Mongo db connection url
     MONGO_DB_CONNECTION = 'mongodb://127.0.0.1:27017/whatsapp'
@@ -9,9 +8,6 @@ class Config:
     ACCOUNT_SID = os.environ.get('ACCOUNT_SID')
     AUTH_TOKEN = os.environ.get('AUTH_TOKEN')
     TWILIO_PHONE_NO = os.environ.get('TWILIO_PHONE_NO')
-
-    # Kafka Topic name
-    KAFKA_TOPIC_NAME = 'kafka-whatsapp'
 
     # API Configs
     API_PATH = '/api/'
@@ -27,4 +23,8 @@ class Config:
 
     # Messages API endpoint
     SEND_MESSAGE = API_PATH+API_VERSION+'/send_message/<string:phone_no>'
-    RECEIVE_MESSAGE = API_PATH+API_VERSION+'/receive_message/<string:phone_no>'
+    RECEIVE_MESSAGE = API_PATH+API_VERSION+'/receive_message/<string:phone_no>/<string:receiver>'
+    
+    # Groups API endpoint
+    CREATE_GROUPS = API_PATH+API_VERSION+'/create_group/<string:phone_no>'
+    GROUP_MESSAGES = API_PATH+API_VERSION+'/group_messages/<string:phone_no>/<string:group_id>'

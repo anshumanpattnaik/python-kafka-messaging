@@ -16,7 +16,7 @@ jwt = JWTManager(app)
 
 @app.route('/')
 def redirect_to_docs():
-    return redirect("http://127.0.0.1:5000/api/docs")
+    return redirect(Config.BASE_URL+"/api/docs")
 
 # Swagger api docs route
 @app.route('/swagger/<path:path>')
@@ -46,5 +46,8 @@ def initialize_app():
 
     from app.api.kafka_message_api import messages_bp
     app.register_blueprint(messages_bp)
+
+    from app.api.groups_api import groups_bp
+    app.register_blueprint(groups_bp)
 
     return app
