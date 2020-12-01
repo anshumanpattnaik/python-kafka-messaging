@@ -101,7 +101,7 @@ def sign_up():
         users = Users(full_name=full_name,
                       phone_no=phone_no,
                       photo_url=photo_url,
-                      is_verify=True)
+                      is_verify=False)
         users.save()
 
         response = twilio_msg_verify(phone_no)
