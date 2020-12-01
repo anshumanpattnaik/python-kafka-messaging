@@ -25,7 +25,7 @@ def twilio_msg_verify(phone_no):
 
     return response
 
-
+# Fetch user profile with their registered phone no
 @users_bp.route(Config.USER_PROFILE, methods=['GET'])
 @jwt_required
 def user_profile(phone_no):
@@ -38,7 +38,7 @@ def user_profile(phone_no):
     else:
         abort(401)
 
-
+# Update user details with their registered phone no
 @users_bp.route(Config.UPDATE_PROFILE, methods=['PUT'])
 @jwt_required
 def update_profile(phone_no):
@@ -56,13 +56,14 @@ def update_profile(phone_no):
     else:
         abort(401)
 
-
+# User authentication using twilio messaging
 @users_bp.route(Config.SIGN_IN, methods=['POST'])
 def sign_in():
     try:
         phone_no = request.json['phone_no']
         response = twilio_msg_verify(phone_no)
 
+        # If twilio response then otp has been sent to your registered phone no 
         if response:
             return make_response(jsonify({
                 'success': "OTP is sent to your registered phone number"
@@ -73,7 +74,7 @@ def sign_in():
             'error': "Phone number you've entered is not registered"
         }), 401)
 
-
+# Create an account and a topic using Kafka admin client
 @users_bp.route(Config.SIGN_UP, methods=['POST'])
 def sign_up():
     try:
@@ -89,11 +90,12 @@ def sign_up():
 
         kafka_topic_name = phone_no.replace("+", "")
 
+        # To start the conversation in between 1 single user, then user's phone no
+        # will be used a topic to produce messages with another consumer.
         client = KafkaAdminClient(bootstrap_servers="localhost:9092", client_id=phone_no)
 
         topics = []
-        topics.append(
-            NewTopic(name=kafka_topic_name, num_partitions=1, replication_factor=1))
+        topics.append(NewTopic(name=kafka_topic_name, num_partitions=1, replication_factor=1))
         client.create_topics(new_topics=topics, validate_only=False)
 
         users = Users(full_name=full_name,
@@ -111,7 +113,7 @@ def sign_up():
     except KeyError:
         abort(400)
 
-
+# User verfication using twilio messaging system
 @users_bp.route(Config.OTP_VERIFY, methods=['POST'])
 def account_verify():
     try:
@@ -119,13 +121,18 @@ def account_verify():
         otp = request.json['otp']
 
         otp_obj = Otp.objects(phone_no=phone_no).first()
+        
+        # If none then user verification already completed
         if otp_obj == None:
             return make_response(jsonify({'error': 'User verification already completed'}), 200)
 
         if(otp_obj.otp == otp):
+            # Delete the otp collection once it verifies
             otp_obj.delete()
 
             user = Users.objects(phone_no=phone_no).first()
+            
+            # If it's already verified then it will generate the JWT token
             if(user.is_verify == True):
                 access_token = create_access_token(identity=phone_no)
 

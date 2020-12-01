@@ -8,7 +8,7 @@ from ..config import Config
 
 messages_bp = Blueprint('messages', __name__)
 
-
+# Fetch messages for a particular consumer
 @messages_bp.route(Config.RECEIVE_MESSAGE, methods=['GET'])
 @jwt_required
 def receive_message(phone_no, receiver):
@@ -23,7 +23,7 @@ def receive_message(phone_no, receiver):
     else:
         abort(401)
 
-
+# Produce messages with the consumers using KafkaProducer
 @messages_bp.route(Config.SEND_MESSAGE, methods=['POST'])
 @jwt_required
 def send_message(phone_no):
@@ -37,12 +37,12 @@ def send_message(phone_no):
             message = request.json['message']
             timestamp = request.json['timestamp']
 
+            # Removed (+) operator as Kafka doesn't allow special characters to create a topic
             receiver = receiver.replace("+", "")
-
             participants = '{}_{}'.format(phone_no, receiver)
 
-            producer = KafkaProducer(
-                bootstrap_servers=['localhost:9092'], api_version=(0, 10))
+            # Instantiate kafka producer to send message to a topic
+            producer = KafkaProducer(bootstrap_servers=['localhost:9092'], api_version=(0, 10))
             producer.send(receiver, message_obj)
             producer.flush()
 
