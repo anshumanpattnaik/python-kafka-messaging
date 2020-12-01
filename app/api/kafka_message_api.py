@@ -37,7 +37,7 @@ def send_message(phone_no):
             message = request.json['message']
             timestamp = request.json['timestamp']
 
-            # Removed (+) operator as Kafka doesn't allow special characters to create a topic
+            # Removed (+) operator as Kafka doesn't allow special characters
             receiver = receiver.replace("+", "")
             participants = '{}_{}'.format(phone_no, receiver)
 

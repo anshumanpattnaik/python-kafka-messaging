@@ -1,4 +1,3 @@
-from flask.globals import request
 from .. import db
 
 class Users(db.Document):

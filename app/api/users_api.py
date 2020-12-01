@@ -91,7 +91,7 @@ def sign_up():
         kafka_topic_name = phone_no.replace("+", "")
 
         # To start the conversation in between 1 single user, then user's phone no
-        # will be used a topic to produce messages with another consumer.
+        # will be used as a topic to produce messages with another consumer.
         client = KafkaAdminClient(bootstrap_servers="localhost:9092", client_id=phone_no)
 
         topics = []
