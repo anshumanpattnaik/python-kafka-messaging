@@ -6,7 +6,7 @@ The idea behind this project is to demonstrate the chat messaging service using 
 ## Technical Overview
 The proof of concept written using python and it follows the core & common architecture of WhatsApp Messenger and to replicate the similar messaging concepts it uses [kafka-python](https://pypi.org/project/kafka-python/) library to send/receive messages using KafkaProducer/KafkaConsumer. It also implements [Twilio](https://www.twilio.com/) messaging framework for user authentication by verifying their registered phone no using the sent OTP and to cache all the user data and chat messages it uses mongodb database for the storage.
 
-In this messaging system, there are three different types of Microservices designed using python flask framework.
+In this messaging system, there are three different types of Microservices designed using [python flask framework](https://flask.palletsprojects.com/en/1.1.x/).
 
 1. Users
 2. Kafka Messaging
