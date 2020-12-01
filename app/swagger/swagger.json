@@ -6,7 +6,7 @@
         "description": "The idea behind this project is to demostrate the chat messaging service using Apache Kafka and the proof of concept follows the architecture of whatsapp",
         "contact": {
             "name": "Anshuman Pattnaik",
-            "url": "https://hackbotone.com"
+            "url": "https://github.com/anshumanpattnaik/python-kafka-messaging"
         }
     },
     "servers": [
