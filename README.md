@@ -23,7 +23,7 @@ The Swagger API docs can be accessible via [http://127.0.0.1:5000/api/docs](http
 ``````````````````````````````````````````````````````````````````
 git clone https://github.com/anshumanpattnaik/python-kafka-messaging
 cd python-kafka-messaging
-pip install requirements.txt
+pip install -r requirements.txt
 ``````````````````````````````````````````````````````````````````
 
 ## Twilio Configurations
